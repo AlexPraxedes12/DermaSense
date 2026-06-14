@@ -1,0 +1,280 @@
+# =========================================================
+# DermaSense / Flutter multi-platform .gitignore
+# Enfoque: NO subir llaves, certificados, credenciales ni builds.
+# =========================================================
+
+# =========================================================
+# 1) SECRETOS, LLAVES Y FIRMA - GLOBAL
+# =========================================================
+# Android signing keys / keystores
+*.jks
+*.keystore
+*.store
+upload-keystore.*
+release-key.*
+my-release-key.*
+key.properties
+**/key.properties
+
+# Certificados / llaves privadas / provisioning
+*.p12
+*.pfx
+*.pem
+*.key
+*.crt
+*.cer
+*.der
+*.csr
+*.mobileprovision
+*.provisionprofile
+*.certSigningRequest
+ExportOptions.plist
+**/ExportOptions.plist
+
+# Variables de entorno y secretos locales
+.env
+.env.*
+*.env
+*.env.*
+.envrc
+secrets.*
+secret.*
+*.secret
+*.secrets
+credentials.*
+credential.*
+token.*
+tokens.*
+
+# Configs privadas / locales
+local.properties
+*.local
+*.local.*
+local_config.*
+config.local.*
+config.secret.*
+dart_defines.json
+dart-define.json
+dart_defines.*.json
+dart-define.*.json
+env.json
+env.*.json
+
+# Firebase / Google / servicios externos
+# Estos archivos no siempre son secretos, pero suelen exponer IDs/API keys.
+# Si decides versionarlos, usa archivos .example sin datos reales.
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+macos/Runner/GoogleService-Info.plist
+google-services.json
+GoogleService-Info.plist
+lib/firebase_options.dart
+firebase_options.dart
+sentry.properties
+amplifyconfiguration.dart
+awsconfiguration.json
+
+# =========================================================
+# 2) FLUTTER / DART / PUB
+# =========================================================
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+/build/
+coverage/
+
+# Documentación/API generada
+**/doc/api/
+
+# Símbolos, obfuscation y debug info
+app.*.symbols
+app.*.map.json
+*.symbols
+*.map.json
+*.dill
+
+# Archivos generados por Flutter
+**/GeneratedPluginRegistrant.*
+**/generated_plugin_registrant.*
+**/Flutter/.last_build_id
+
+# IMPORTANTE:
+# Para una app Flutter normalmente SÍ conviene subir pubspec.lock.
+# No agregues pubspec.lock aquí salvo que sea una librería/paquete.
+
+# =========================================================
+# 3) ANDROID / GRADLE
+# =========================================================
+android/.gradle/
+android/captures/
+android/local.properties
+android/build/
+android/app/build/
+android/app/debug/
+android/app/profile/
+android/app/release/
+
+# Firma Android en ubicaciones comunes
+android/**/*.jks
+android/**/*.keystore
+android/**/*.p12
+android/**/*.pfx
+android/**/*.pem
+android/**/*.key
+android/app/upload-keystore.jks
+android/upload-keystore.jks
+android/app/release-key.jks
+android/release-key.jks
+
+# No ignores el Gradle wrapper; normalmente debe subirse:
+# android/gradle/wrapper/gradle-wrapper.jar
+
+# =========================================================
+# 4) iOS
+# =========================================================
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/App.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Flutter/ephemeral/
+ios/build/
+
+# Xcode usuario/local
+ios/**/*.xcuserstate
+ios/**/*.xcuserdatad/
+ios/**/*.xcodeproj/project.xcworkspace/xcuserdata/
+ios/**/*.xcworkspace/xcuserdata/
+ios/Runner.xcworkspace/xcuserdata/
+ios/Runner.xcodeproj/xcuserdata/
+
+# =========================================================
+# 5) macOS
+# =========================================================
+macos/Pods/
+macos/.symlinks/
+macos/Flutter/ephemeral/
+macos/build/
+
+# Xcode usuario/local
+macos/**/*.xcuserstate
+macos/**/*.xcuserdatad/
+macos/**/*.xcodeproj/project.xcworkspace/xcuserdata/
+macos/**/*.xcworkspace/xcuserdata/
+
+# =========================================================
+# 6) WINDOWS
+# =========================================================
+windows/flutter/ephemeral/
+windows/build/
+windows/**/*.suo
+windows/**/*.user
+windows/**/*.userosscache
+windows/**/*.sln.docstates
+windows/**/*.VC.db
+windows/**/*.VC.VC.opendb
+
+# =========================================================
+# 7) LINUX
+# =========================================================
+linux/flutter/ephemeral/
+linux/build/
+
+# =========================================================
+# 8) WEB
+# =========================================================
+web/.dart_tool/
+web/build/
+
+# =========================================================
+# 9) IDEs / EDITORES
+# =========================================================
+# JetBrains / Android Studio / IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# VS Code: se permiten configs útiles sin secretos.
+# Si launch.json/tasks.json contienen tokens o rutas privadas, bórralos o ignóralos.
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# =========================================================
+# 10) SISTEMA OPERATIVO
+# =========================================================
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.stackdump
+
+# =========================================================
+# 11) LOGS / TEMPORALES / BACKUPS
+# =========================================================
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*.orig
+*.class
+*.pyc
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================================================
+# 12) ARCHIVOS COMPRIMIDOS / BUILDS EXPORTADOS
+# =========================================================
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+*.apk
+*.aab
+*.ipa
+*.dmg
+*.pkg
+*.exe
+*.msix
+*.app
+
+# =========================================================
+# 13) OTROS / DOCUMENTOS LOCALES DEL PROYECTO
+# =========================================================
+
+REFACTOR_MVVM_PROMPT.md
+migrate_working_dir/
+.history/
+.svn/
+.atom/
+.build/
+.buildlog/
+.swiftpm/
+
+# Archivos de ejemplo permitidos, por si quieres documentar configuración segura
+!*.example
+!*.example.*
+!.env.example
+!secrets.example.*
+!config.example.*
+
+
+REFACTOR_MVVM_PROMPT.md
