@@ -1,3 +1,5 @@
+[![Download installers](https://img.shields.io/badge/Download%20installers-%20Releases-blue?style=for-the-badge&logo=github)](https://github.com/AlexPraxedes12/DermaSense/releases) [![Watch demo on YouTube](https://img.shields.io/badge/Watch%20Demo-YouTube-red?style=for-the-badge&logo=youtube)](https://youtube.com/shorts/jE4ANR4ltUI?feature=share)
+
 # DermaSense
 
 **DermaSense** is a low-cost smart mat for preventive monitoring of pressure and local temperature in people who remain seated or lying down for long periods.
@@ -10,7 +12,7 @@ The system combines an `8 x 8` pressure-sensing matrix, `6 NTC` temperature sens
 
 ## Project overview
 
-Pressure ulcers can appear when one body area remains under pressure for too long. In many care environments, prevention depends on manual checks, fixed routines and the caregiver remembering to reposition the person in time.
+Pressure ulcers can appear when one body area remains under pressure for too long. In many care environments, prevention depends on manual checks, fixed routines and the caregiver remembering to r[...]
 
 DermaSense aims to make pressure easier to understand by turning a support surface into a sensing interface. The app helps visualize:
 
@@ -41,7 +43,7 @@ The current prototype includes:
 - powerbank-based `5V` supply;
 - Flutter app for Android, Windows and desktop testing.
 
-In this prototype revision, the matrix, NTC and power connections are soldered directly to the PCB. The first connector layout was too tight for reliable assembly, so direct soldering was used to improve continuity during testing. A future PCB revision will use better-spaced, more robust connectors.
+In this prototype revision, the matrix, NTC and power connections are soldered directly to the PCB. The first connector layout was too tight for reliable assembly, so direct soldering was used to [...]
 
 ---
 
@@ -95,7 +97,7 @@ Flutter app
 
 ### Pressure sensing
 
-The pressure layer uses a resistive matrix made from copper traces and Velostat. Velostat changes resistance when pressure is applied. By scanning rows and columns, the system estimates relative pressure at each of the `64` intersections.
+The pressure layer uses a resistive matrix made from copper traces and Velostat. Velostat changes resistance when pressure is applied. By scanning rows and columns, the system estimates relative p[...]
 
 The readings are relative and require calibration. They should not be interpreted as clinical pressure units.
 
@@ -322,7 +324,7 @@ Planned next steps:
 
 DermaSense is designed as a preventive support prototype for visualization, education and early-stage research.
 
-It should not be used as the only method for patient monitoring. Any medical or clinical use would require professional supervision, formal validation, electrical safety review, material safety review and compliance with applicable regulations.
+It should not be used as the only method for patient monitoring. Any medical or clinical use would require professional supervision, formal validation, electrical safety review, material safety r[...]
 
 ---
 
