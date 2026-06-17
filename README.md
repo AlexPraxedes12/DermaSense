@@ -337,3 +337,4 @@ It should not be used as the only method for patient monitoring. Any medical or 
 Developed by **Alejandro Aguilar Martínez**.
 
 DermaSense is part of an accessible health-tech development line focused on low-cost sensing, embedded systems and preventive care tools.
+"# LandingDerma" 
