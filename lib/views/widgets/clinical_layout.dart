@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:derma_sense/models/enums.dart';
 import 'package:derma_sense/models/mat_reading.dart';
+import 'package:derma_sense/models/sensor_history.dart';
+import 'package:derma_sense/views/widgets/history_trends_panel.dart';
 import 'package:derma_sense/views/widgets/pressure_heatmap_panel.dart';
 import 'package:derma_sense/views/widgets/smart_recommendations_panel.dart';
 import 'package:derma_sense/views/widgets/summary_grid.dart';
@@ -19,6 +21,9 @@ class LiveDashboardContent extends StatelessWidget {
     required this.hasProlongedPressure,
     required this.highPressureStreak,
     required this.postureMode,
+    required this.historySummary,
+    required this.historyWindow,
+    required this.onHistoryWindowChanged,
   });
 
   /// Lectura actual a representar.
@@ -32,6 +37,9 @@ class LiveDashboardContent extends StatelessWidget {
 
   /// Modo de interpretación según la postura.
   final PatientPostureMode postureMode;
+  final SensorHistorySummary historySummary;
+  final HistoryWindow historyWindow;
+  final ValueChanged<HistoryWindow> onHistoryWindowChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +47,13 @@ class LiveDashboardContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SummaryGrid(reading: reading),
+        const SizedBox(height: 20),
+        HistoryTrendsPanel(
+          summary: historySummary,
+          selectedWindow: historyWindow,
+          postureMode: postureMode,
+          onWindowChanged: onHistoryWindowChanged,
+        ),
         const SizedBox(height: 20),
         _ResponsiveClinicalLayout(
           reading: reading,

@@ -10,8 +10,12 @@ void main() {
     expect(find.text('Derma Sense'), findsOneWidget);
     expect(find.text('Mapa de presion 8x8'), findsOneWidget);
     expect(find.text('Recomendaciones inteligentes'), findsOneWidget);
-    expect(find.text('Riesgo Verde'), findsOneWidget);
-    expect(find.text('Temperatura NTC'), findsOneWidget);
+    expect(find.text('Historial y tendencias'), findsOneWidget);
+    expect(find.text('Detalle temperatura NTC'), findsOneWidget);
+    expect(find.text('5 min'), findsOneWidget);
+    expect(find.text('10 min'), findsOneWidget);
+    expect(find.text('15 min'), findsOneWidget);
+    expect(find.text('Carga sostenida relativa'), findsOneWidget);
     expect(find.text('Simular Datos'), findsOneWidget);
 
     await tester.tap(find.text('Simular Datos'));
@@ -38,5 +42,7 @@ void main() {
     expect(find.text('Derma Sense'), findsOneWidget);
     expect(find.text('Mapa de presion 8x8'), findsOneWidget);
     expect(find.text('Recomendaciones inteligentes'), findsOneWidget);
+    expect(find.text('Historial y tendencias'), findsOneWidget);
+    expect(find.text('5 min'), findsOneWidget);
   });
 }

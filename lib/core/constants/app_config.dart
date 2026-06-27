@@ -120,6 +120,48 @@ const int prolongedPressureThreshold = 3500;
 const int prolongedPressureFrames = 3;
 
 // ---------------------------------------------------------------------------
+// Historial y tendencias (umbrales de prototipo; requieren validación)
+// ---------------------------------------------------------------------------
+
+/// Ventanas disponibles para analizar presión y temperatura.
+const List<Duration> historyWindows = <Duration>[
+  Duration(minutes: 5),
+  Duration(minutes: 10),
+  Duration(minutes: 15),
+];
+
+/// Retención máxima del historial en memoria.
+const Duration sensorHistoryRetention = Duration(minutes: 30);
+
+/// Separación mínima entre muestras guardadas para limitar memoria y CPU.
+const Duration sensorHistorySampleInterval = Duration(seconds: 1);
+
+/// Límite defensivo adicional para el historial en memoria.
+const int sensorHistoryMaxSamples = 1800;
+
+/// Proporción mínima de una ventana que debe estar cubierta para considerarla
+/// completa. No es un umbral clínico.
+const double minimumHistoryWindowCoverage = 0.8;
+
+/// Umbral relativo para contar una celda como cargada de forma sostenida.
+/// Valor de prototipo; requiere calibración con referencias externas.
+const int sustainedPressureRelativeThreshold = 2200;
+
+/// Temperatura superficial elevada de prototipo. Requiere validación.
+const double highTemperatureThresholdC = 37.5;
+
+/// Temperatura superficial baja de prototipo. Requiere validación.
+const double lowTemperatureThresholdC = 25.0;
+
+/// Cambio absoluto considerado rápido dentro de la ventana seleccionada.
+/// Valor de prototipo; requiere validación.
+const double rapidTemperatureChangeThresholdC = 1.5;
+
+/// Cambio mínimo para describir una tendencia como ascendente o descendente.
+/// Valor de prototipo; requiere validación.
+const double temperatureTrendChangeThresholdC = 0.4;
+
+// ---------------------------------------------------------------------------
 // Tiempos de la capa de red / UI
 // ---------------------------------------------------------------------------
 

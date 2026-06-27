@@ -12,7 +12,9 @@ The system combines an `8 x 8` pressure-sensing matrix, `6 NTC` temperature sens
 
 ## Project overview
 
-Pressure ulcers can appear when one body area remains under pressure for too long. In many care environments, prevention depends on manual checks, fixed routines and the caregiver remembering to r[...]
+Pressure injuries can develop when a body area remains under pressure for an extended period. In many care environments, prevention depends on manual checks, repositioning routines and consistent observation by caregivers.
+
+Pressure-ulcer risk is multifactorial. Pressure magnitude and exposure time matter, but moisture, friction/shear, mobility, skin condition, nutrition, local perfusion and temperature changes can also influence risk. DermaSense does not diagnose ulcers; it helps visualize pressure and temperature patterns that may support preventive awareness.
 
 DermaSense aims to make pressure easier to understand by turning a support surface into a sensing interface. The app helps visualize:
 
@@ -43,7 +45,7 @@ The current prototype includes:
 - powerbank-based `5V` supply;
 - Flutter app for Android, Windows and desktop testing.
 
-In this prototype revision, the matrix, NTC and power connections are soldered directly to the PCB. The first connector layout was too tight for reliable assembly, so direct soldering was used to [...]
+In this prototype revision, the matrix, NTC and power connections are soldered directly to the PCB. The first connector layout was too tight for reliable assembly, so direct soldering was used to complete and evaluate the prototype.
 
 ---
 
@@ -69,9 +71,30 @@ The Flutter app displays:
 - maximum pressure value;
 - average pressure value;
 - readings from `6` NTC sensors;
+- pressure history by zone;
+- temperature trend interpretation;
+- identification of possible high, low or rapidly changing temperature patterns;
 - seated / lying interpretation mode;
 - connection status;
 - visual recommendations based on pressure and temperature patterns.
+
+Future versions are expected to support configurable pressure-history windows such as `5`, `10` and `15` minutes.
+
+---
+
+## New app features
+
+- pressure history by matrix cell and posture mode;
+- temperature history for each of the `6` NTC sensors;
+- selectable `5`, `10` and `15` minute trend windows based on real timestamps;
+- maximum and average pressure summaries for the selected window;
+- sustained relative load analysis for the most persistent pressure cell;
+- preventive temperature trend interpretation, including elevated, low, rising, dropping and rapid-change patterns;
+- an in-memory retention limit to keep resource usage predictable;
+- a calibration-ready pressure configuration while values remain relative;
+- documentation for future protective textile and moisture-barrier testing.
+
+Temperature history was prioritized because an instantaneous value alone does not describe how a zone evolves. Increases, rapid drops and abnormally cold areas may provide complementary context related to local perfusion changes. These trends support preventive observation only and are not diagnostic.
 
 ---
 
@@ -97,13 +120,13 @@ Flutter app
 
 ### Pressure sensing
 
-The pressure layer uses a resistive matrix made from copper traces and Velostat. Velostat changes resistance when pressure is applied. By scanning rows and columns, the system estimates relative p[...]
+The pressure layer uses a resistive matrix made from copper traces and Velostat. Velostat changes resistance when pressure is applied. By scanning rows and columns, the system estimates the relative pressure distribution across `64` sensing points.
 
-The readings are relative and require calibration. They should not be interpreted as clinical pressure units.
+The current readings are relative and require calibration. A future calibration stage will compare the matrix output against known weights, a scale, a sphygmomanometer or other external references. When discussing pressure in clinical contexts, the correct unit is usually `mmHg`, meaning millimeters of mercury, not milligrams of mercury. Mapping the prototype output to `mmHg` must only be attempted after appropriate validation.
 
 ### Temperature sensing
 
-The prototype uses `6` NTC temperature sensors placed around relevant body zones. Temperature is used as a complementary signal, not as a diagnostic measurement.
+The prototype uses `6` NTC temperature sensors placed around relevant body zones. Temperature is interpreted as a complementary trend, not as a diagnosis. The system should not only consider high temperature. Rapid drops or abnormally cold zones may also be relevant as complementary signals related to local perfusion changes.
 
 Current interpretation:
 
@@ -117,6 +140,23 @@ Current interpretation:
 | NTC6 | Ambient reference |
 
 The same physical distribution can be interpreted differently depending on whether the person is seated or lying down.
+
+---
+
+## Clinical feedback
+
+DermaSense received early clinical feedback from Evelyn Estefania Herrera Guerra, professor type A at Escuela Nacional de Estudios Superiores, Unidad León, Universidad Nacional Autónoma de México. Her comments helped strengthen the prototype around pressure calibration, temperature interpretation, moisture protection and pressure-history recording.
+
+The feedback also emphasized that instantaneous temperature is not sufficient by itself. Recording thermal history can help observe increases, rapid decreases or unusually cold zones as complementary patterns that may relate to changes in local irrigation or perfusion. This interpretation remains preventive and does not constitute a diagnosis.
+
+- Compare pressure readings with external references such as known weights, a scale or sphygmomanometer.
+- Use `mmHg` correctly when discussing pressure references.
+- Validate NTC readings with an external thermometer.
+- Consider both high temperature and rapid drops or abnormally cold areas.
+- Test a protective textile or barrier against liquids such as urine without significantly affecting pressure and temperature readings.
+- Register pressure history by zones over time windows such as `5`, `10` and `15` minutes.
+
+This feedback represents early guidance for prototype improvement and does not constitute certification, clinical validation or institutional endorsement.
 
 ---
 
@@ -292,12 +332,15 @@ DermaSense is still a prototype. Current limitations include:
 
 - it is not a certified medical device;
 - it does not diagnose pressure ulcers;
-- pressure readings are relative and require calibration;
+- pressure values are not yet expressed in calibrated clinical units;
+- the relationship between matrix readings and `mmHg` still needs validation;
 - NTC readings require per-sensor normalization;
+- temperature readings are complementary and not diagnostic;
 - the mat needs more comfort and durability testing;
 - the system needs validation with known weights and controlled conditions;
+- the effect of textile or moisture barriers on pressure and temperature readings needs testing;
 - the current PCB revision uses direct soldered connections;
-- future use in clinical environments would require formal validation, safety review and regulatory guidance.
+- clinical use would require formal validation, safety review and regulatory review.
 
 ---
 
@@ -305,26 +348,40 @@ DermaSense is still a prototype. Current limitations include:
 
 Planned next steps:
 
-- calibrate the pressure matrix with known weights;
+- calibrate pressure readings with known weights and external references;
+- explore `mmHg` mapping only after validation;
+- validate each NTC sensor against an external thermometer;
 - normalize each NTC sensor;
 - measure real battery life;
 - improve cable routing and enclosure compactness;
 - design a second PCB revision with better-spaced connectors;
 - improve the washable cover and surface comfort;
+- test protective textiles or barriers against moisture;
+- evaluate whether the barrier affects pressure and temperature readings;
+- add pressure history by zone;
+- add `5`, `10` and `15` minute pressure trend windows;
 - add session history to the app;
 - add pressure-over-time alerts;
 - add trend graphs;
 - create a robust demo mode;
-- collect feedback from physiotherapy, rehabilitation and nursing professionals;
+- document feedback from physiotherapy, dermatology, rehabilitation or nursing professionals;
 - define a non-clinical testing protocol before any medical use.
 
 ---
 
 ## Safety and responsibility
 
-DermaSense is designed as a preventive support prototype for visualization, education and early-stage research.
+DermaSense is designed as a preventive support prototype for visualization, education and early-stage research. It is not a certified medical device, does not diagnose pressure ulcers, does not treat patients and does not replace clinical assessment. Any medical or clinical use would require professional supervision, formal validation, electrical safety review, material safety review, biocompatibility analysis, moisture-control testing and compliance with applicable regulations.
 
-It should not be used as the only method for patient monitoring. Any medical or clinical use would require professional supervision, formal validation, electrical safety review, material safety r[...]
+---
+
+## References and clinical context
+
+- National Pressure Injury Advisory Panel. *Pressure Injury Prevention Points*.
+- NPIAP/EPUAP/PPPIA. *Prevention and Treatment of Pressure Ulcers/Injuries: Clinical Practice Guideline*.
+- *Braden Scale for Predicting Pressure Sore Risk*.
+- Mayo Clinic. *Bedsores (pressure ulcers): Symptoms and causes*.
+- Literature on pressure-ulcer microclimate, moisture and temperature as risk factors.
 
 ---
 

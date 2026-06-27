@@ -8,6 +8,8 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:derma_sense/core/constants/app_config.dart';
 import 'package:derma_sense/models/enums.dart';
 import 'package:derma_sense/models/mat_reading.dart';
+import 'package:derma_sense/models/sensor_history.dart';
+import 'package:derma_sense/services/sensor_history_service.dart';
 
 /// Resultado de intentar aplicar una nueva URL de WebSocket.
 ///
@@ -43,6 +45,7 @@ class DashboardController extends ChangeNotifier {
   final StreamController<MatReading> _readingsController =
       StreamController<MatReading>.broadcast();
   final Random _random = Random();
+  final SensorHistoryService _historyService = SensorHistoryService();
 
   WebSocketChannel? _channel;
   StreamSubscription<dynamic>? _socketSubscription;
@@ -61,6 +64,7 @@ class DashboardController extends ChangeNotifier {
   bool _isRemoteMock = false;
   String? _remoteMockMode;
   PatientPostureMode _postureMode = PatientPostureMode.supine;
+  HistoryWindow _historyWindow = HistoryWindow.fiveMinutes;
   bool _isDisposed = false;
 
   /// Flujo de lecturas listas para la UI (ya filtradas y *throttled*).
@@ -89,6 +93,13 @@ class DashboardController extends ChangeNotifier {
 
   /// Modo de interpretación según la postura del paciente.
   PatientPostureMode get postureMode => _postureMode;
+
+  /// Ventana activa del panel de historial.
+  HistoryWindow get historyWindow => _historyWindow;
+
+  /// Resumen preventivo de presión y de los seis NTC en la ventana activa.
+  SensorHistorySummary get historySummary =>
+      _historyService.summarize(_historyWindow);
 
   /// `true` cuando la presión alta se ha mantenido suficientes frames como para
   /// disparar la alerta de presión prolongada.
@@ -399,6 +410,7 @@ class DashboardController extends ChangeNotifier {
 
     _queuedReading = null;
     _lastUiEmitAt = DateTime.now();
+    _historyService.record(reading, _postureMode);
     _readingsController.add(reading);
   }
 
@@ -437,6 +449,15 @@ class DashboardController extends ChangeNotifier {
       return;
     }
     _postureMode = mode;
+    _safeNotify();
+  }
+
+  /// Cambia la ventana de análisis sin alterar ni descartar el historial.
+  void setHistoryWindow(HistoryWindow window) {
+    if (_historyWindow == window) {
+      return;
+    }
+    _historyWindow = window;
     _safeNotify();
   }
 

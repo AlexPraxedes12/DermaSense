@@ -127,7 +127,8 @@ class _PressureMatDashboardState extends State<PressureMatDashboard> {
                             stream: _controller.readings,
                             initialData: MatReading.empty(),
                             builder: (context, snapshot) {
-                              final reading = snapshot.data ?? MatReading.empty();
+                              final reading =
+                                  snapshot.data ?? MatReading.empty();
                               return LiveDashboardContent(
                                 reading: reading,
                                 hasProlongedPressure:
@@ -135,6 +136,10 @@ class _PressureMatDashboardState extends State<PressureMatDashboard> {
                                 highPressureStreak:
                                     _controller.highPressureStreak,
                                 postureMode: _controller.postureMode,
+                                historySummary: _controller.historySummary,
+                                historyWindow: _controller.historyWindow,
+                                onHistoryWindowChanged:
+                                    _controller.setHistoryWindow,
                               );
                             },
                           ),
