@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:derma_sense/core/constants/app_config.dart';
+import 'package:derma_sense/core/localization/app_localizations.dart';
 import 'package:derma_sense/core/theme/app_colors.dart';
 import 'package:derma_sense/core/utils/formatters.dart';
 
@@ -58,7 +59,7 @@ class MockScenarioPanel extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'Escenarios mock',
+                          context.l10n.text('mock_scenarios'),
                           style: theme.textTheme.labelLarge?.copyWith(
                             color: AppColors.textPrimary,
                             fontWeight: FontWeight.w800,
@@ -71,7 +72,7 @@ class MockScenarioPanel extends StatelessWidget {
                     OutlinedButton.icon(
                       onPressed: onRequestSnapshot,
                       icon: const Icon(Icons.camera_rounded),
-                      label: const Text('Snapshot'),
+                      label: Text(context.l10n.text('snapshot')),
                     ),
                   ],
                 )
@@ -85,7 +86,7 @@ class MockScenarioPanel extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Escenarios mock',
+                      context.l10n.text('mock_scenarios'),
                       style: theme.textTheme.labelLarge?.copyWith(
                         color: AppColors.textPrimary,
                         fontWeight: FontWeight.w800,
@@ -96,7 +97,7 @@ class MockScenarioPanel extends StatelessWidget {
                     OutlinedButton.icon(
                       onPressed: onRequestSnapshot,
                       icon: const Icon(Icons.camera_rounded),
-                      label: const Text('Snapshot'),
+                      label: Text(context.l10n.text('snapshot')),
                     ),
                   ],
                 ),
@@ -107,7 +108,7 @@ class MockScenarioPanel extends StatelessWidget {
                 children: [
                   for (final mode in mockScenarioModes)
                     ChoiceChip(
-                      label: Text(mockModeLabel(mode)),
+                      label: Text(context.l10n.text(mockModeKey(mode))),
                       selected: activeMode == mode,
                       onSelected: (_) => onSelectMode(mode),
                       selectedColor: AppColors.cyan.withAlpha(38),

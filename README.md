@@ -6,6 +6,8 @@
 
 The system combines an `8 x 8` pressure-sensing matrix, `6 NTC` temperature sensors, an `ESP32`, a custom PCB and a Flutter app that visualizes the data as a live pressure heatmap.
 
+The app includes a multilingual interface in Spanish, English and French to make the prototype easier to test with caregivers, schools, rehabilitation spaces and international collaborators.
+
 > **Important:** DermaSense is a preventive prototype and research/education tool. It is **not** a certified medical device and does **not** diagnose, treat or replace clinical assessment.
 
 ---
@@ -76,7 +78,8 @@ The Flutter app displays:
 - identification of possible high, low or rapidly changing temperature patterns;
 - seated / lying interpretation mode;
 - connection status;
-- visual recommendations based on pressure and temperature patterns.
+- visual recommendations based on pressure and temperature patterns;
+- multilingual interface support: Spanish, English and French;
 
 Future versions are expected to support configurable pressure-history windows such as `5`, `10` and `15` minutes.
 
@@ -92,6 +95,7 @@ Future versions are expected to support configurable pressure-history windows su
 - preventive temperature trend interpretation, including elevated, low, rising, dropping and rapid-change patterns;
 - an in-memory retention limit to keep resource usage predictable;
 - a calibration-ready pressure configuration while values remain relative;
+- multilingual app interface in Spanish, English and French;
 - documentation for future protective textile and moisture-barrier testing.
 
 Temperature history was prioritized because an instantaneous value alone does not describe how a zone evolves. Increases, rapid drops and abnormally cold areas may provide complementary context related to local perfusion changes. These trends support preventive observation only and are not diagnostic.
@@ -180,6 +184,7 @@ Main technologies:
 - Dart
 - WebSocket communication
 - MVVM-style app organization
+- multilingual UI strings for Spanish, English and French
 
 ---
 
@@ -263,6 +268,45 @@ Build Windows version:
 flutter build windows
 ```
 
+Build the install-free web demo:
+
+```bash
+flutter build web --release --pwa-strategy=none
+python -m http.server 8080 --directory build/web
+```
+
+Then open `http://127.0.0.1:8080`. The web edition starts with simulated
+readings so visitors can explore the heatmap, thermal history, posture modes
+and preventive recommendations without an ESP32 or a local installation.
+
+For GitHub Pages, build with the repository path as the base URL:
+
+```bash
+flutter build web --release --base-href /YOUR_REPOSITORY_NAME/
+```
+
+Publish the contents of `build/web` with GitHub Pages or any static hosting
+provider. The deployed page does not require a backend for demonstration mode.
+
+For Vercel, create a preview deployment with the included PowerShell helper:
+
+```powershell
+.\deploy-vercel.ps1
+```
+
+The helper uses the valid lowercase Vercel project name
+`derma-sense-demo` and accepts the static hosting defaults automatically.
+
+After reviewing the preview URL, publish the production deployment:
+
+```powershell
+.\deploy-vercel.ps1 -Production
+```
+
+The script builds and deploys only `build/web`; Vercel does not need Flutter
+installed on its build servers. See [VERCEL_DEPLOY.md](VERCEL_DEPLOY.md) for
+the first login, manual commands and the live-hardware connectivity note.
+
 Expected build artifacts:
 
 ```text
@@ -271,6 +315,9 @@ build/app/outputs/flutter-apk/app-release.apk
 
 Windows executable:
 build/windows/x64/runner/Release/derma_sense.exe
+
+Web demo:
+build/web/index.html
 ```
 
 ---
@@ -364,6 +411,7 @@ Planned next steps:
 - add pressure-over-time alerts;
 - add trend graphs;
 - create a robust demo mode;
+- refine multilingual wording with caregiver and professional feedback;
 - document feedback from physiotherapy, dermatology, rehabilitation or nursing professionals;
 - define a non-clinical testing protocol before any medical use.
 

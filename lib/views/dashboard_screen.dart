@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:derma_sense/core/constants/app_config.dart';
@@ -17,7 +18,14 @@ import 'package:derma_sense/views/widgets/posture_mode_panel.dart';
 /// 3. Escucha al controlador ([ListenableBuilder]) y al flujo de lecturas
 ///    ([StreamBuilder]) para dibujar el estado.
 class PressureMatDashboard extends StatefulWidget {
-  const PressureMatDashboard({super.key});
+  const PressureMatDashboard({
+    super.key,
+    required this.locale,
+    required this.onLocaleChanged,
+  });
+
+  final Locale locale;
+  final ValueChanged<Locale> onLocaleChanged;
 
   @override
   State<PressureMatDashboard> createState() => _PressureMatDashboardState();
@@ -31,9 +39,21 @@ class _PressureMatDashboardState extends State<PressureMatDashboard> {
   @override
   void initState() {
     super.initState();
-    _controller = DashboardController();
+    _controller = DashboardController(locale: widget.locale);
     _socketUrlController = TextEditingController(text: _controller.socketUrl);
-    _controller.connect();
+    if (kIsWeb) {
+      _controller.toggleSimulation();
+    } else {
+      _controller.connect();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant PressureMatDashboard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.locale != widget.locale) {
+      _controller.setLocale(widget.locale);
+    }
   }
 
   @override
@@ -111,6 +131,9 @@ class _PressureMatDashboardState extends State<PressureMatDashboard> {
                             socketUrl: _controller.socketUrl,
                             socketUrlController: _socketUrlController,
                             activeMockMode: _controller.remoteMockMode,
+                            locale: widget.locale,
+                            isWebDemo: kIsWeb,
+                            onLocaleChanged: widget.onLocaleChanged,
                             onReconnect: _controller.connect,
                             onApplySocketUrl: _handleApplySocketUrl,
                             onRequestSnapshot: _controller.requestSnapshot,

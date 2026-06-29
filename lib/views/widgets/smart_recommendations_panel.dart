@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:derma_sense/core/constants/app_config.dart';
+import 'package:derma_sense/core/localization/app_localizations.dart';
 import 'package:derma_sense/core/theme/app_colors.dart';
 import 'package:derma_sense/core/utils/visual_mappers.dart';
 import 'package:derma_sense/models/intelligent_recommendation.dart';
@@ -39,10 +40,12 @@ class SmartRecommendationsPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final recommendation = IntelligentRecommendation.fromReading(
       reading,
       hasProlongedPressure: hasProlongedPressure,
       postureMode: postureMode,
+      l10n: l10n,
     );
     final color = riskColor(recommendation.riskLevel);
     final theme = Theme.of(context);
@@ -52,8 +55,12 @@ class SmartRecommendationsPanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SectionHeader(
-            title: 'Recomendaciones inteligentes',
-            subtitle: postureMode.recommendationSubtitle,
+            title: l10n.text('smart_recommendations'),
+            subtitle: l10n.text(
+              postureMode == PatientPostureMode.seated
+                  ? 'recommendation_seated_subtitle'
+                  : 'recommendation_supine_subtitle',
+            ),
             trailing: RiskBadge(level: recommendation.riskLevel),
           ),
           const SizedBox(height: 18),
@@ -128,11 +135,12 @@ class _RecommendationSignals extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Row(
       children: [
         Expanded(
           child: _SignalTile(
-            label: 'Puntos >3500',
+            label: l10n.text('points_threshold'),
             value: '${reading.highPressurePointCount}',
             color: reading.highPressurePointCount > 0
                 ? AppColors.red
@@ -142,7 +150,7 @@ class _RecommendationSignals extends StatelessWidget {
         const SizedBox(width: 10),
         Expanded(
           child: _SignalTile(
-            label: 'Secuencia',
+            label: l10n.text('sequence'),
             value: '$highPressureStreak',
             color: highPressureStreak >= prolongedPressureFrames
                 ? AppColors.red
@@ -152,8 +160,8 @@ class _RecommendationSignals extends StatelessWidget {
         const SizedBox(width: 10),
         Expanded(
           child: _SignalTile(
-            label: 'Zona',
-            value: describeHotspotZone(reading, postureMode),
+            label: l10n.text('zone'),
+            value: describeHotspotZone(reading, postureMode, l10n),
             color: AppColors.blue,
           ),
         ),

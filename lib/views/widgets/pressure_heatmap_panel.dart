@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:derma_sense/core/constants/app_config.dart';
+import 'package:derma_sense/core/localization/app_localizations.dart';
 import 'package:derma_sense/core/theme/app_colors.dart';
 import 'package:derma_sense/core/utils/formatters.dart';
 import 'package:derma_sense/core/utils/visual_mappers.dart';
@@ -29,13 +30,18 @@ class PressureHeatmapPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return PremiumCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SectionHeader(
-            title: 'Mapa de presion 8x8',
-            subtitle: postureMode.pressurePanelSubtitle,
+            title: l10n.text('pressure_map'),
+            subtitle: l10n.text(
+              postureMode == PatientPostureMode.seated
+                  ? 'pressure_seated_subtitle'
+                  : 'pressure_supine_subtitle',
+            ),
             trailing: SourceBadge(isSimulated: reading.isSimulated),
           ),
           const SizedBox(height: 18),
@@ -108,7 +114,10 @@ class _PressureCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Tooltip(
-      message: 'Celda ${index + 1}: $value',
+      message: context.l10n.text('cell_value', {
+        'cell': index + 1,
+        'value': value,
+      }),
       child: SizedBox.square(
         dimension: size,
         child: DecoratedBox(
@@ -160,18 +169,24 @@ class _PressureLegend extends StatelessWidget {
             Flexible(
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: FittedBox(child: Text('0 baja', style: style)),
+                child: FittedBox(
+                  child: Text(context.l10n.text('low_scale'), style: style),
+                ),
               ),
             ),
             Flexible(
               child: Center(
-                child: FittedBox(child: Text('2048 media', style: style)),
+                child: FittedBox(
+                  child: Text(context.l10n.text('mid_scale'), style: style),
+                ),
               ),
             ),
             Flexible(
               child: Align(
                 alignment: Alignment.centerRight,
-                child: FittedBox(child: Text('4095 alta', style: style)),
+                child: FittedBox(
+                  child: Text(context.l10n.text('high_scale'), style: style),
+                ),
               ),
             ),
           ],
@@ -192,6 +207,7 @@ class _NtcInlineSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
 
     return Container(
       padding: const EdgeInsets.all(14),
@@ -208,7 +224,7 @@ class _NtcInlineSummary extends StatelessWidget {
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               Text(
-                'Resumen termico',
+                l10n.text('thermal_summary'),
                 style: theme.textTheme.titleMedium?.copyWith(
                   color: AppColors.textPrimary,
                   fontWeight: FontWeight.w800,
@@ -221,7 +237,7 @@ class _NtcInlineSummary extends StatelessWidget {
                     : Icons.sensors_off_rounded,
                 label: reading.hasAnyValidClinicalTemperature
                     ? formatTemperature(reading.peakClinicalTemperature)
-                    : 'Sin lectura',
+                    : l10n.text('no_reading'),
                 color: reading.hasAnyValidClinicalTemperature
                     ? temperatureColor(reading.peakClinicalTemperature)
                     : AppColors.textSecondary,
@@ -231,8 +247,12 @@ class _NtcInlineSummary extends StatelessWidget {
                     ? Icons.warning_amber_rounded
                     : Icons.radio_button_checked_rounded,
                 label: reading.hasAnyValidClinicalTemperature
-                    ? '${reading.clinicalTemperatureAlertCount} alertas'
-                    : '${reading.validClinicalTemperatureSensorCount}/5 clinicos',
+                    ? l10n.text('alerts', {
+                        'count': reading.clinicalTemperatureAlertCount,
+                      })
+                    : l10n.text('clinical_count', {
+                        'count': reading.validClinicalTemperatureSensorCount,
+                      }),
                 color: reading.hasAnyValidClinicalTemperature
                     ? (reading.clinicalTemperatureAlertCount > 0
                           ? AppColors.orange
@@ -248,7 +268,7 @@ class _NtcInlineSummary extends StatelessWidget {
             children: [
               for (var index = 0; index < temperatureSensorCount; index++)
                 _NtcInlineChip(
-                  label: ntcDisplayLabelsForMode(postureMode)[index],
+                  label: ntcDisplayLabelsForMode(postureMode, l10n)[index],
                   value: index < reading.temperatures.length
                       ? reading.temperatures[index]
                       : 0.0,
@@ -305,7 +325,9 @@ class _NtcInlineChip extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Text(
-                formatTemperatureLabel(value, isValid: isValid),
+                isValid
+                    ? formatTemperature(value)
+                    : context.l10n.text('no_reading'),
                 style: theme.textTheme.labelLarge?.copyWith(
                   color: isValid
                       ? AppColors.textPrimary

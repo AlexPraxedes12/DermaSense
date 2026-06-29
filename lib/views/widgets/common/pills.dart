@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:derma_sense/core/localization/app_localizations.dart';
 import 'package:derma_sense/core/theme/app_colors.dart';
 import 'package:derma_sense/core/utils/visual_mappers.dart';
 import 'package:derma_sense/models/enums.dart';
@@ -74,22 +75,22 @@ class ConnectionChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final (label, color, icon) = switch (status) {
       Esp32ConnectionStatus.connecting => (
-        'Conectando',
+        context.l10n.text('connecting'),
         AppColors.orange,
         Icons.sync_rounded,
       ),
       Esp32ConnectionStatus.connected => (
-        'Conectado',
+        context.l10n.text('connected'),
         AppColors.green,
         Icons.sensors_rounded,
       ),
       Esp32ConnectionStatus.disconnected => (
-        'Desconectado',
+        context.l10n.text('disconnected'),
         AppColors.textSecondary,
         Icons.wifi_off_rounded,
       ),
       Esp32ConnectionStatus.error => (
-        'Error',
+        context.l10n.text('error'),
         AppColors.red,
         Icons.error_outline_rounded,
       ),
@@ -125,10 +126,17 @@ class RiskBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final color = riskColor(level);
     return InfoPill(
       icon: Icons.circle,
-      label: 'Riesgo ${riskLabel(level)}',
+      label: l10n.text('risk', {
+        'level': l10n.text(switch (level) {
+          RiskLevel.low => 'risk_low',
+          RiskLevel.medium => 'risk_medium',
+          RiskLevel.high => 'risk_high',
+        }),
+      }),
       color: color,
     );
   }

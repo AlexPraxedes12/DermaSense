@@ -21,14 +21,14 @@ String formatTemperatureLabel(double value, {required bool isValid}) {
 
 /// Convierte el identificador interno de un escenario mock en su etiqueta
 /// legible para los chips de la UI.
-String mockModeLabel(String mode) {
+String mockModeKey(String mode) {
   return switch (mode) {
-    'empty' => 'Vacio',
-    'supine' => 'Supino',
-    'left' => 'Carga izq',
-    'right' => 'Carga der',
-    'hotspot' => 'Hotspot',
-    'rolling' => 'Rodando',
+    'empty' => 'mock_empty',
+    'supine' => 'mock_supine',
+    'left' => 'mock_left',
+    'right' => 'mock_right',
+    'hotspot' => 'mock_hotspot',
+    'rolling' => 'mock_rolling',
     _ => mode,
   };
 }

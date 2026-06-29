@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:derma_sense/core/constants/app_config.dart';
+import 'package:derma_sense/core/localization/app_localizations.dart';
 import 'package:derma_sense/core/utils/formatters.dart';
 import 'package:derma_sense/models/enums.dart';
 import 'package:derma_sense/models/mat_reading.dart';
@@ -40,6 +41,7 @@ class IntelligentRecommendation {
     MatReading reading, {
     required bool hasProlongedPressure,
     required PatientPostureMode postureMode,
+    required AppLocalizations l10n,
   }) {
     final totalPressure = max(reading.totalPressureSum, 1.0);
     final leftShare = reading.leftPressureSum / totalPressure;
@@ -48,7 +50,7 @@ class IntelligentRecommendation {
         reading.maxPressure > 1800 && leftShare > rightShare + 0.16;
     final hasRightConcentration =
         reading.maxPressure > 1800 && rightShare > leftShare + 0.16;
-    final hotspotZone = describeHotspotZone(reading, postureMode);
+    final hotspotZone = describeHotspotZone(reading, postureMode, l10n);
     final isSeated = postureMode == PatientPostureMode.seated;
 
     if (reading.clinicalHyperemiaCount > 0) {
@@ -56,12 +58,12 @@ class IntelligentRecommendation {
         kind: RecommendationKind.skinCheck,
         riskLevel: RiskLevel.high,
         assetPath: skinCheckAsset,
-        title: 'Revisar piel',
-        action: 'Evaluar hiperemia',
-        message:
-            'Un sensor NTC supera ${formatTemperature(hyperemiaAlertCelsius)}. '
-            'Revise coloracion, humedad y temperatura local en $hotspotZone '
-            'antes de continuar.',
+        title: l10n.text('rec_skin_title'),
+        action: l10n.text('rec_skin_action'),
+        message: l10n.text('rec_skin_message', {
+          'temperature': formatTemperature(hyperemiaAlertCelsius),
+          'zone': hotspotZone,
+        }),
       );
     }
 
@@ -70,12 +72,14 @@ class IntelligentRecommendation {
         kind: RecommendationKind.pressureAlert,
         riskLevel: RiskLevel.high,
         assetPath: pressureAlertAsset,
-        title: 'Alerta de presion',
-        action: 'Descargar zona critica',
-        message:
-            'Hay puntos sobre $prolongedPressureThreshold durante varias '
-            'lecturas. El foco principal esta en $hotspotZone. '
-            '${isSeated ? 'Reacomode la sedestacion y haga alivio de presion con el cojin o la superficie de apoyo.' : 'Redistribuya el apoyo con cambio de posicion, cuña o almohada y confirme una nueva lectura.'}',
+        title: l10n.text('rec_prolonged_title'),
+        action: l10n.text('rec_prolonged_action'),
+        message: l10n.text(
+          isSeated
+              ? 'rec_prolonged_message_seated'
+              : 'rec_prolonged_message_supine',
+          {'threshold': prolongedPressureThreshold, 'zone': hotspotZone},
+        ),
       );
     }
 
@@ -86,15 +90,15 @@ class IntelligentRecommendation {
             ? RiskLevel.high
             : RiskLevel.medium,
         assetPath: turnLeftAsset,
-        title: isSeated
-            ? 'Descargar lado derecho'
-            : 'Redistribuir hacia la izquierda',
-        action: isSeated
-            ? 'Inclinar o apoyar mas hacia la izquierda'
-            : 'Reducir apoyo en hemipelvis derecha',
-        message:
-            'La presion se concentra en el lado derecho de la matriz. '
-            '${isSeated ? 'Pida una descarga breve del lado derecho o ajuste la postura y confirme nueva lectura.' : 'Haga un cambio postural suave hacia la izquierda y confirme nueva lectura.'}',
+        title: l10n.text(
+          isSeated ? 'rec_right_title_seated' : 'rec_right_title_supine',
+        ),
+        action: l10n.text(
+          isSeated ? 'rec_right_action_seated' : 'rec_right_action_supine',
+        ),
+        message: l10n.text(
+          isSeated ? 'rec_right_message_seated' : 'rec_right_message_supine',
+        ),
       );
     }
 
@@ -105,15 +109,15 @@ class IntelligentRecommendation {
             ? RiskLevel.high
             : RiskLevel.medium,
         assetPath: turnRightAsset,
-        title: isSeated
-            ? 'Descargar lado izquierdo'
-            : 'Redistribuir hacia la derecha',
-        action: isSeated
-            ? 'Inclinar o apoyar mas hacia la derecha'
-            : 'Reducir apoyo en hemipelvis izquierda',
-        message:
-            'La presion se concentra en el lado izquierdo de la matriz. '
-            '${isSeated ? 'Pida una descarga breve del lado izquierdo o ajuste la postura y confirme nueva lectura.' : 'Haga un cambio postural suave hacia la derecha y confirme nueva lectura.'}',
+        title: l10n.text(
+          isSeated ? 'rec_left_title_seated' : 'rec_left_title_supine',
+        ),
+        action: l10n.text(
+          isSeated ? 'rec_left_action_seated' : 'rec_left_action_supine',
+        ),
+        message: l10n.text(
+          isSeated ? 'rec_left_message_seated' : 'rec_left_message_supine',
+        ),
       );
     }
 
@@ -122,30 +126,32 @@ class IntelligentRecommendation {
         kind: RecommendationKind.pressureAlert,
         riskLevel: RiskLevel.medium,
         assetPath: pressureAlertAsset,
-        title: 'Presion elevada',
-        action: isSeated
-            ? 'Ajustar apoyo en sedestacion'
-            : 'Ajustar apoyo en decubito',
-        message:
-            'Se detecta presion alta en $hotspotZone. '
-            '${isSeated ? 'Si se mantiene, descargue peso, corrija postura y revise el cojin.' : 'Si se mantiene, cambie el apoyo, use una cuña o almohada y revise el acolchado.'}',
+        title: l10n.text('rec_elevated_title'),
+        action: l10n.text(
+          isSeated
+              ? 'rec_elevated_action_seated'
+              : 'rec_elevated_action_supine',
+        ),
+        message: l10n.text(
+          isSeated
+              ? 'rec_elevated_message_seated'
+              : 'rec_elevated_message_supine',
+          {'zone': hotspotZone},
+        ),
       );
     }
 
     if (!reading.hasAnyValidClinicalTemperature) {
-      final message = reading.hasAnyPressureSignal
-          ? 'El mapa de presion ya transmite, pero los NTC clinicos aun no '
-                'entregan lecturas validas. Revise montaje, divisor de 6.8k '
-                'y cableado.'
-          : 'El ESP32 esta activo, pero todavia no hay lecturas validas de '
-                'presion ni temperatura. Verifique tapete, NTC y ADS1115.';
+      final message = l10n.text(
+        reading.hasAnyPressureSignal ? 'rec_wait_pressure' : 'rec_wait_empty',
+      );
 
       return IntelligentRecommendation(
         kind: RecommendationKind.awaitingData,
         riskLevel: RiskLevel.medium,
         assetPath: safeAsset,
-        title: 'Esperando lecturas',
-        action: 'Verificar sensores',
+        title: l10n.text('rec_wait_title'),
+        action: l10n.text('rec_wait_action'),
         message: message,
       );
     }
@@ -156,12 +162,12 @@ class IntelligentRecommendation {
         kind: RecommendationKind.safe,
         riskLevel: RiskLevel.low,
         assetPath: safeAsset,
-        title: 'Estado seguro',
-        action: 'Continuar monitoreo',
-        message:
-            'La presion promedio es baja y las temperaturas estan por debajo '
-            'de ${formatTemperature(safeTemperatureCelsius)}. '
-            '${isSeated ? 'Mantenga vigilancia de la postura y del tiempo en sedestacion.' : 'Mantenga vigilancia del apoyo sacro-pelvico y de los cambios de posicion.'}',
+        title: l10n.text('rec_safe_title'),
+        action: l10n.text('rec_safe_action'),
+        message: l10n.text(
+          isSeated ? 'rec_safe_message_seated' : 'rec_safe_message_supine',
+          {'temperature': formatTemperature(safeTemperatureCelsius)},
+        ),
       );
     }
 
@@ -169,12 +175,11 @@ class IntelligentRecommendation {
       kind: RecommendationKind.safe,
       riskLevel: RiskLevel.medium,
       assetPath: safeAsset,
-      title: 'Monitoreo preventivo',
-      action: 'Revisar tendencia',
-      message:
-          'Los valores se mantienen dentro de un rango aceptable, pero conviene '
-          'observar la tendencia de presion y temperatura. '
-          '${isSeated ? 'Si la carga se concentra, ajuste la sedestacion antes de que aparezca molestia.' : 'Si el apoyo se concentra, redistribuya la posicion antes de que la zona se caliente.'}',
+      title: l10n.text('rec_monitor_title'),
+      action: l10n.text('rec_monitor_action'),
+      message: l10n.text(
+        isSeated ? 'rec_monitor_message_seated' : 'rec_monitor_message_supine',
+      ),
     );
   }
 

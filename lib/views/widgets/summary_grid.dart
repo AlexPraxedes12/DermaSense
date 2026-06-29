@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:derma_sense/core/localization/app_localizations.dart';
 import 'package:derma_sense/core/theme/app_colors.dart';
 import 'package:derma_sense/core/utils/formatters.dart';
 import 'package:derma_sense/core/utils/visual_mappers.dart';
@@ -19,6 +20,7 @@ class SummaryGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return LayoutBuilder(
       builder: (context, constraints) {
         final columns = constraints.maxWidth < 320
@@ -33,13 +35,13 @@ class SummaryGrid extends StatelessWidget {
         final cards = [
           _MetricCard(
             icon: Icons.speed_rounded,
-            label: 'Presion maxima',
+            label: l10n.text('pressure_max'),
             value: '${reading.maxPressure}',
             accent: pressureColor(reading.maxPressure),
           ),
           _MetricCard(
             icon: Icons.grid_view_rounded,
-            label: 'Promedio',
+            label: l10n.text('average'),
             value: reading.averagePressure.round().toString(),
             accent: AppColors.cyan,
           ),
@@ -47,17 +49,17 @@ class SummaryGrid extends StatelessWidget {
             icon: reading.hasAnyValidClinicalTemperature
                 ? Icons.thermostat_rounded
                 : Icons.sensors_off_rounded,
-            label: 'Temp. clinica max.',
+            label: l10n.text('clinical_temp_max'),
             value: reading.hasAnyValidClinicalTemperature
                 ? formatTemperature(reading.peakClinicalTemperature)
-                : 'Sin lectura',
+                : l10n.text('no_reading'),
             accent: reading.hasAnyValidClinicalTemperature
                 ? temperatureColor(reading.peakClinicalTemperature)
                 : AppColors.textSecondary,
           ),
           _MetricCard(
             icon: Icons.schedule_rounded,
-            label: 'Ultima lectura',
+            label: l10n.text('last_reading'),
             value: formatTime(reading.receivedAt),
             accent: AppColors.orange,
           ),

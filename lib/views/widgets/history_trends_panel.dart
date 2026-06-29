@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:derma_sense/core/localization/app_localizations.dart';
 import 'package:derma_sense/core/theme/app_colors.dart';
 import 'package:derma_sense/core/utils/formatters.dart';
 import 'package:derma_sense/models/enums.dart';
@@ -25,13 +26,14 @@ class HistoryTrendsPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return PremiumCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SectionHeader(
-            title: 'Historial y tendencias',
-            subtitle: 'Presión relativa y evolución térmica preventiva',
+            title: l10n.text('history_trends'),
+            subtitle: l10n.text('history_subtitle'),
             trailing: _WindowSelector(
               selected: selectedWindow,
               onChanged: onWindowChanged,
@@ -41,14 +43,14 @@ class HistoryTrendsPanel extends StatelessWidget {
           if (!summary.hasFullWindow)
             _InformationBanner(
               text: summary.hasAnyData
-                  ? 'Aún no hay suficientes datos para completar esta ventana.'
-                  : 'Esperando lecturas para iniciar el historial.',
+                  ? l10n.text('history_incomplete')
+                  : l10n.text('history_waiting'),
             ),
           if (!summary.hasFullWindow) const SizedBox(height: 14),
           _PressureWindowMetrics(summary: summary),
           const SizedBox(height: 18),
           Text(
-            'Tendencia por sensor NTC',
+            l10n.text('trend_by_sensor'),
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               color: AppColors.textPrimary,
               fontWeight: FontWeight.w800,
@@ -81,7 +83,15 @@ class _WindowSelector extends StatelessWidget {
           .map(
             (window) => ButtonSegment<HistoryWindow>(
               value: window,
-              label: Text(window.label),
+              label: SizedBox(
+                width: 48,
+                child: Text(
+                  window.label,
+                  maxLines: 1,
+                  softWrap: false,
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ),
           )
           .toList(growable: false),
@@ -90,6 +100,7 @@ class _WindowSelector extends StatelessWidget {
       onSelectionChanged: (selection) => onChanged(selection.first),
       style: const ButtonStyle(
         visualDensity: VisualDensity(horizontal: -2, vertical: -2),
+        padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 8)),
       ),
     );
   }
@@ -102,32 +113,36 @@ class _PressureWindowMetrics extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final hotspot = summary.sustainedHotspotIndex;
     final hotspotLabel = hotspot == null
-        ? 'Sin carga persistente'
-        : 'Fila ${hotspot ~/ 8 + 1}, columna ${hotspot % 8 + 1}';
+        ? l10n.text('no_persistent_load')
+        : l10n.text('row_column', {
+            'row': hotspot ~/ 8 + 1,
+            'column': hotspot % 8 + 1,
+          });
     final items = <_TrendMetricData>[
       _TrendMetricData(
         icon: Icons.speed_rounded,
-        label: 'Presión máxima',
+        label: l10n.text('pressure_max'),
         value: '${summary.maximumPressure}',
         color: AppColors.orange,
       ),
       _TrendMetricData(
         icon: Icons.functions_rounded,
-        label: 'Presión promedio',
+        label: l10n.text('average_pressure'),
         value: summary.averagePressure.toStringAsFixed(0),
         color: AppColors.cyan,
       ),
       _TrendMetricData(
         icon: Icons.timelapse_rounded,
-        label: 'Carga sostenida relativa',
+        label: l10n.text('sustained_load'),
         value: '${summary.sustainedRelativeLoad.toStringAsFixed(0)} %',
         color: AppColors.blue,
       ),
       _TrendMetricData(
         icon: Icons.grid_on_rounded,
-        label: 'Zona más persistente',
+        label: l10n.text('persistent_zone'),
         value: hotspotLabel,
         color: AppColors.green,
       ),
@@ -236,7 +251,7 @@ class _TemperatureTrendGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final labels = ntcDisplayLabelsForMode(postureMode);
+    final labels = ntcDisplayLabelsForMode(postureMode, context.l10n);
     return LayoutBuilder(
       builder: (context, constraints) {
         final columns = constraints.maxWidth < 480
@@ -317,7 +332,7 @@ class _TemperatureTrendTile extends StatelessWidget {
           ),
           const SizedBox(height: 7),
           Text(
-            trend.status.label,
+            _trendLabel(context.l10n, trend.status),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: color,
               fontWeight: FontWeight.w700,
@@ -326,7 +341,10 @@ class _TemperatureTrendTile extends StatelessWidget {
           ),
           if (change != null)
             Text(
-              'Cambio ${change >= 0 ? '+' : ''}${change.toStringAsFixed(1)} °C',
+              context.l10n.text('temperature_change', {
+                'change':
+                    '${change >= 0 ? '+' : ''}${change.toStringAsFixed(1)}',
+              }),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: AppColors.textSecondary,
                 letterSpacing: 0,
@@ -335,7 +353,7 @@ class _TemperatureTrendTile extends StatelessWidget {
           if (_isPreventiveAlert(trend.status)) ...[
             const SizedBox(height: 5),
             Text(
-              trend.preventiveMessage,
+              _preventiveMessage(context.l10n, trend.status),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -390,8 +408,7 @@ class _CalibrationNote extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      'Lecturas relativas: requieren calibración para interpretación clínica. '
-      'Las tendencias térmicas son señales complementarias, no diagnósticos.',
+      context.l10n.text('calibration_note'),
       style: Theme.of(context).textTheme.bodySmall?.copyWith(
         color: AppColors.textSecondary,
         fontStyle: FontStyle.italic,
@@ -399,6 +416,35 @@ class _CalibrationNote extends StatelessWidget {
       ),
     );
   }
+}
+
+String _trendLabel(AppLocalizations l10n, TemperatureTrendStatus status) {
+  final key = switch (status) {
+    TemperatureTrendStatus.insufficientData => 'trend_insufficient',
+    TemperatureTrendStatus.stable => 'trend_stable',
+    TemperatureTrendStatus.elevated => 'trend_elevated',
+    TemperatureTrendStatus.low => 'trend_low',
+    TemperatureTrendStatus.rising => 'trend_rising',
+    TemperatureTrendStatus.dropping => 'trend_dropping',
+    TemperatureTrendStatus.rapidRise => 'trend_rapid_rise',
+    TemperatureTrendStatus.rapidDrop => 'trend_rapid_drop',
+  };
+  return l10n.text(key);
+}
+
+String _preventiveMessage(
+  AppLocalizations l10n,
+  TemperatureTrendStatus status,
+) {
+  final key = switch (status) {
+    TemperatureTrendStatus.elevated => 'preventive_elevated',
+    TemperatureTrendStatus.low => 'preventive_low',
+    TemperatureTrendStatus.rapidDrop => 'preventive_rapid_drop',
+    TemperatureTrendStatus.rapidRise => 'preventive_rapid_rise',
+    TemperatureTrendStatus.insufficientData => 'preventive_wait',
+    _ => 'preventive_default',
+  };
+  return l10n.text(key);
 }
 
 bool _isPreventiveAlert(TemperatureTrendStatus status) {

@@ -1,4 +1,4 @@
-import 'package:derma_sense/core/constants/app_config.dart';
+import 'package:derma_sense/core/localization/app_localizations.dart';
 import 'package:derma_sense/models/enums.dart';
 import 'package:derma_sense/models/mat_reading.dart';
 
@@ -10,23 +10,21 @@ import 'package:derma_sense/models/mat_reading.dart';
 /// correspondencia para que la UI y las recomendaciones hablen el mismo idioma.
 
 /// Etiquetas cortas de los NTC para el [mode] indicado.
-List<String> ntcDisplayLabelsForMode(PatientPostureMode mode) {
-  switch (mode) {
-    case PatientPostureMode.seated:
-      return seatedNtcDisplayLabels;
-    case PatientPostureMode.supine:
-      return supineNtcDisplayLabels;
-  }
+List<String> ntcDisplayLabelsForMode(
+  PatientPostureMode mode,
+  AppLocalizations l10n,
+) {
+  final seated = mode == PatientPostureMode.seated;
+  return List.generate(6, (index) => l10n.ntcShortLabel(seated, index));
 }
 
 /// Etiquetas completas de los NTC para el [mode] indicado.
-List<String> ntcFullLabelsForMode(PatientPostureMode mode) {
-  switch (mode) {
-    case PatientPostureMode.seated:
-      return seatedNtcFullLabels;
-    case PatientPostureMode.supine:
-      return supineNtcFullLabels;
-  }
+List<String> ntcFullLabelsForMode(
+  PatientPostureMode mode,
+  AppLocalizations l10n,
+) {
+  final seated = mode == PatientPostureMode.seated;
+  return List.generate(6, (index) => l10n.ntcFullLabel(seated, index));
 }
 
 /// Describe la zona anatómica del punto caliente de [reading] interpretada
@@ -35,9 +33,13 @@ List<String> ntcFullLabelsForMode(PatientPostureMode mode) {
 /// A diferencia de `MatReading.hotspotZone` (genérica), aquí la fila/columna de
 /// la celda con mayor presión se traduce a regiones específicas de sedestación
 /// (isquion, muslo, sacro) o de decúbito supino (pelvis, muslo posterior).
-String describeHotspotZone(MatReading reading, PatientPostureMode postureMode) {
+String describeHotspotZone(
+  MatReading reading,
+  PatientPostureMode postureMode,
+  AppLocalizations l10n,
+) {
   if (!reading.hasAnyPressureSignal) {
-    return 'sin lectura';
+    return l10n.text('zone_no_reading');
   }
 
   final x = reading.hotspotIndex % 8;
@@ -46,19 +48,27 @@ String describeHotspotZone(MatReading reading, PatientPostureMode postureMode) {
   switch (postureMode) {
     case PatientPostureMode.seated:
       if (y <= 1) {
-        return 'sacro / coccix';
+        return l10n.text('zone_sacrum_coccyx');
       }
       if (y <= 4) {
-        return x <= 3 ? 'isquion izquierdo' : 'isquion derecho';
+        return x <= 3
+            ? l10n.text('zone_left_ischium')
+            : l10n.text('zone_right_ischium');
       }
-      return x <= 3 ? 'muslo izquierdo' : 'muslo derecho';
+      return x <= 3
+          ? l10n.text('zone_left_thigh')
+          : l10n.text('zone_right_thigh');
     case PatientPostureMode.supine:
       if (y <= 1) {
-        return 'sacro';
+        return l10n.text('zone_sacrum');
       }
       if (y <= 4) {
-        return x <= 3 ? 'pelvis / gluteo izquierdo' : 'pelvis / gluteo derecho';
+        return x <= 3
+            ? l10n.text('zone_left_pelvis')
+            : l10n.text('zone_right_pelvis');
       }
-      return x <= 3 ? 'muslo posterior izquierdo' : 'muslo posterior derecho';
+      return x <= 3
+          ? l10n.text('zone_left_posterior_thigh')
+          : l10n.text('zone_right_posterior_thigh');
   }
 }

@@ -2,10 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'package:derma_sense/core/constants/app_config.dart';
+import 'package:derma_sense/core/localization/app_localizations.dart';
 import 'package:derma_sense/models/enums.dart';
 import 'package:derma_sense/models/mat_reading.dart';
 import 'package:derma_sense/models/sensor_history.dart';
@@ -42,6 +43,8 @@ enum ApplyUrlResult {
 /// - Exponer el estado de conexión, errores, modo postura y la racha de presión
 ///   alta a la vista mediante `notifyListeners()`.
 class DashboardController extends ChangeNotifier {
+  DashboardController({Locale locale = const Locale('es')}) : _locale = locale;
+
   final StreamController<MatReading> _readingsController =
       StreamController<MatReading>.broadcast();
   final Random _random = Random();
@@ -66,6 +69,15 @@ class DashboardController extends ChangeNotifier {
   PatientPostureMode _postureMode = PatientPostureMode.supine;
   HistoryWindow _historyWindow = HistoryWindow.fiveMinutes;
   bool _isDisposed = false;
+  Locale _locale;
+
+  AppLocalizations get _l10n => AppLocalizations(_locale);
+
+  void setLocale(Locale locale) {
+    _locale = locale;
+    _lastError = null;
+    _safeNotify();
+  }
 
   /// Flujo de lecturas listas para la UI (ya filtradas y *throttled*).
   Stream<MatReading> get readings => _readingsController.stream;
@@ -136,8 +148,7 @@ class DashboardController extends ChangeNotifier {
         _connectionGeneration++;
         _cancelSocketResources();
         _connectionStatus = Esp32ConnectionStatus.error;
-        _lastError =
-            'ESP32 sin respuesta. Use simulacion o pulse Reconectar cuando este disponible.';
+        _lastError = _l10n.text('socket_timeout');
         _safeNotify();
       });
 
@@ -208,8 +219,7 @@ class DashboardController extends ChangeNotifier {
         !parsedUri.hasScheme ||
         parsedUri.host.isEmpty ||
         (parsedUri.scheme != 'ws' && parsedUri.scheme != 'wss')) {
-      _lastError =
-          'URL invalida. Use algo como ws://192.168.4.1:81 o ws://127.0.0.1:81';
+      _lastError = _l10n.text('invalid_url');
       _safeNotify();
       return ApplyUrlResult.invalid;
     }
@@ -254,9 +264,9 @@ class DashboardController extends ChangeNotifier {
         lowerText.contains('semaforo') ||
         lowerText.contains('semaphore') ||
         lowerText.contains('timed out')) {
-      return 'No se pudo conectar al ESP32. Verifique Wi-Fi/IP o use Simular Datos.';
+      return _l10n.text('socket_unavailable');
     }
-    return 'Conexion ESP32 no disponible: $text';
+    return _l10n.text('socket_error', {'error': text});
   }
 
   // -------------------------------------------------------------------------
@@ -275,7 +285,7 @@ class DashboardController extends ChangeNotifier {
 
       final decoded = jsonDecode(trimmedPayload);
       if (decoded is! Map<String, dynamic>) {
-        throw const FormatException('El JSON debe ser un objeto.');
+        throw FormatException(_l10n.text('invalid_json'));
       }
 
       _handleSocketPayload(decoded);
@@ -293,7 +303,7 @@ class DashboardController extends ChangeNotifier {
       if (_isDisposed || !_shouldShowSocketParseError()) {
         return;
       }
-      _lastError = 'Dato descartado: $error';
+      _lastError = _l10n.text('discarded_data', {'error': error});
       _safeNotify();
     }
   }
@@ -336,7 +346,7 @@ class DashboardController extends ChangeNotifier {
 
   void _sendSocketCommand(String command) {
     if (_channel == null || _isSimulating) {
-      _lastError = 'No hay un WebSocket activo para enviar comandos.';
+      _lastError = _l10n.text('no_active_socket');
       _safeNotify();
       return;
     }
@@ -348,7 +358,7 @@ class DashboardController extends ChangeNotifier {
         _safeNotify();
       }
     } catch (error) {
-      _lastError = 'No se pudo enviar comando: $error';
+      _lastError = _l10n.text('command_error', {'error': error});
       _safeNotify();
     }
   }

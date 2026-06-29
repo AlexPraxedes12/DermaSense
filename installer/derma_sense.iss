@@ -1,5 +1,5 @@
 #define MyAppName "Derma Sense"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "1.1.1"
 #define MyAppPublisher "Alejandro Aguilar Martinez"
 #define MyAppExeName "derma_sense.exe"
 
@@ -16,7 +16,7 @@ DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
 OutputDir=..\build\windows\installer
-OutputBaseFilename=derma_sense_setup_1.0.0
+OutputBaseFilename=derma_sense_setup_1.1.1
 SetupIconFile=..\windows\runner\resources\app_icon.ico
 UninstallDisplayIcon={app}\{#MyAppExeName}
 Compression=lzma

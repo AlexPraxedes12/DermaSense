@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:derma_sense/core/localization/app_localizations.dart';
 import 'package:derma_sense/core/theme/app_colors.dart';
 import 'package:derma_sense/models/enums.dart';
 
@@ -24,6 +25,7 @@ class PostureModePanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = context.l10n;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -41,7 +43,7 @@ class PostureModePanel extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Modo de interpretacion',
+                  l10n.text('interpretation_mode'),
                   style: theme.textTheme.titleMedium?.copyWith(
                     color: AppColors.textPrimary,
                     fontWeight: FontWeight.w800,
@@ -50,7 +52,7 @@ class PostureModePanel extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'La misma distribucion fisica de NTC y presion cambia de significado si la persona esta sentada o acostada.',
+                  l10n.text('interpretation_description'),
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: AppColors.textSecondary,
                     height: 1.4,
@@ -71,13 +73,17 @@ class PostureModePanel extends StatelessWidget {
 /// Conmutador de dos opciones (sentado / acostado) que se apila en vertical
 /// cuando el ancho es reducido. Privado: solo lo usa [PostureModePanel].
 class _PostureModeToggle extends StatelessWidget {
-  const _PostureModeToggle({required this.postureMode, required this.onChanged});
+  const _PostureModeToggle({
+    required this.postureMode,
+    required this.onChanged,
+  });
 
   final PatientPostureMode postureMode;
   final ValueChanged<PatientPostureMode> onChanged;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     Widget buildOption(PatientPostureMode mode, IconData icon, String label) {
       return _PostureModeOption(
         icon: icon,
@@ -104,13 +110,13 @@ class _PostureModeToggle extends StatelessWidget {
                     buildOption(
                       PatientPostureMode.seated,
                       Icons.event_seat_rounded,
-                      'Sentado',
+                      l10n.text('seated'),
                     ),
                     const SizedBox(height: 6),
                     buildOption(
                       PatientPostureMode.supine,
                       Icons.airline_seat_flat_rounded,
-                      'Acostado',
+                      l10n.text('supine'),
                     ),
                   ],
                 )
@@ -120,7 +126,7 @@ class _PostureModeToggle extends StatelessWidget {
                       child: buildOption(
                         PatientPostureMode.seated,
                         Icons.event_seat_rounded,
-                        'Sentado',
+                        l10n.text('seated'),
                       ),
                     ),
                     const SizedBox(width: 6),
@@ -128,7 +134,7 @@ class _PostureModeToggle extends StatelessWidget {
                       child: buildOption(
                         PatientPostureMode.supine,
                         Icons.airline_seat_flat_rounded,
-                        'Acostado',
+                        l10n.text('supine'),
                       ),
                     ),
                   ],
@@ -202,7 +208,11 @@ class _PostureModeOption extends StatelessWidget {
               ),
               if (selected) ...[
                 const SizedBox(width: 8),
-                const Icon(Icons.check_rounded, size: 18, color: AppColors.blue),
+                const Icon(
+                  Icons.check_rounded,
+                  size: 18,
+                  color: AppColors.blue,
+                ),
               ],
             ],
           ),

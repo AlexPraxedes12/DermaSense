@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:derma_sense/core/localization/app_localizations.dart';
 import 'package:derma_sense/core/theme/app_colors.dart';
 import 'package:derma_sense/views/dashboard_screen.dart';
 
@@ -8,8 +10,20 @@ import 'package:derma_sense/views/dashboard_screen.dart';
 ///
 /// Configura el [MaterialApp]: tema Material 3, tipografía Inter (Google Fonts),
 /// los estilos de botones y la pantalla inicial ([PressureMatDashboard]).
-class MedicalMatApp extends StatelessWidget {
+class MedicalMatApp extends StatefulWidget {
   const MedicalMatApp({super.key});
+
+  @override
+  State<MedicalMatApp> createState() => _MedicalMatAppState();
+}
+
+class _MedicalMatAppState extends State<MedicalMatApp> {
+  Locale _locale = const Locale('es');
+
+  void _setLocale(Locale locale) {
+    if (_locale == locale) return;
+    setState(() => _locale = locale);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +49,14 @@ class MedicalMatApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Derma Sense',
+      locale: _locale,
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       theme: baseTheme.copyWith(
         textTheme: textTheme,
         filledButtonTheme: FilledButtonThemeData(
@@ -58,7 +80,7 @@ class MedicalMatApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const PressureMatDashboard(),
+      home: PressureMatDashboard(locale: _locale, onLocaleChanged: _setLocale),
     );
   }
 }

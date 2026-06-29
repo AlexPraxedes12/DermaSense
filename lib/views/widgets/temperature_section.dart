@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:derma_sense/core/constants/app_config.dart';
+import 'package:derma_sense/core/localization/app_localizations.dart';
 import 'package:derma_sense/core/theme/app_colors.dart';
 import 'package:derma_sense/core/utils/formatters.dart';
 import 'package:derma_sense/core/utils/visual_mappers.dart';
@@ -29,22 +30,31 @@ class TemperatureSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final postureLabel = l10n.text(
+      postureMode == PatientPostureMode.seated ? 'seated' : 'supine',
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: SectionHeader(
-            title: 'Detalle temperatura NTC',
-            subtitle:
-                '5 sensores clinicos + 1 referencia ambiental (${postureMode.shortLabel.toLowerCase()})',
+            title: l10n.text('temperature_detail'),
+            subtitle: l10n.text('temperature_subtitle', {
+              'posture': postureLabel.toLowerCase(),
+            }),
             trailing: InfoPill(
               icon: reading.hasAnyValidClinicalTemperature
                   ? Icons.warning_amber_rounded
                   : Icons.sensors_off_rounded,
               label: reading.hasAnyValidClinicalTemperature
-                  ? '${reading.clinicalTemperatureAlertCount} alertas'
-                  : '${reading.validClinicalTemperatureSensorCount}/5 clinicos',
+                  ? l10n.text('alerts', {
+                      'count': reading.clinicalTemperatureAlertCount,
+                    })
+                  : l10n.text('clinical_count', {
+                      'count': reading.validClinicalTemperatureSensorCount,
+                    }),
               color: reading.hasAnyValidClinicalTemperature
                   ? (reading.clinicalTemperatureAlertCount > 0
                         ? AppColors.orange
@@ -138,7 +148,7 @@ class _TemperatureCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  ntcFullLabelsForMode(postureMode)[index],
+                  ntcFullLabelsForMode(postureMode, context.l10n)[index],
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.labelLarge?.copyWith(
@@ -152,7 +162,9 @@ class _TemperatureCard extends StatelessWidget {
                   fit: BoxFit.scaleDown,
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    formatTemperatureLabel(value, isValid: isValid),
+                    isValid
+                        ? formatTemperature(value)
+                        : context.l10n.text('no_reading'),
                     maxLines: 1,
                     style: theme.textTheme.titleLarge?.copyWith(
                       color: isValid
