@@ -1,5 +1,7 @@
 [![Download installers](https://img.shields.io/badge/Download%20installers-%20Releases-blue?style=for-the-badge&logo=github)](https://github.com/AlexPraxedes12/DermaSense/releases) [![Watch demo on YouTube](https://img.shields.io/badge/Watch%20Demo-YouTube-red?style=for-the-badge&logo=youtube)](https://youtube.com/shorts/jE4ANR4ltUI?feature=share) [![Project website](https://img.shields.io/badge/Visit%20website-DermaSense-orange?style=for-the-badge&logo=globe)](https://dermasense.org/)
 
+[![Probar simulador de tapete](https://img.shields.io/badge/Probar%20simulador%20de%20tapete-Abrir%20demo-0B57D0?style=for-the-badge&logo=googlechrome&logoColor=white)](https://simulator.dermasense.org/)
+
 # DermaSense
 
 **DermaSense** is a low-cost smart mat for preventive monitoring of pressure and local temperature in people who remain seated or lying down for long periods.
